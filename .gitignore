@@ -59,3 +59,8 @@ typings/
 
 # next.js build output
 .next
+
+demo.pdf
+demo-file-header.pdf
+
+.DS_*
