@@ -19,23 +19,13 @@ export const prepareOptions = (optionsFromCLI) =>
       }
     }
 
-    if (
-        ["headerTemplate", "footerTemplate"].includes(optionKey)
-        && value.startsWith("file://")
-    ){
-      const loadedFile = fs.readFileSync(
-        value.replace("file://", ""),
-        "utf-8"
-      );
-      return {
-        ...acc,
-        [optionKey]: loadedFile,
-      }
-    }
+    const optionValue = ["headerTemplate", "footerTemplate"].includes(optionKey) &&
+      value.startsWith("file://")
+        ? fs.readFileSync(value.replace("file://", ""), "utf-8")
+        : value;
 
     return {
       ...acc,
-      [optionKey]: value,
+      [optionKey]: optionValue,
     };
-
   }, {});
