@@ -60,7 +60,7 @@ program
     "waitUntil accepts choices load, domcontentloaded, networkidle0, networkidle2. Defaults to 'networkidle2'.",
     "networkidle2"
   )
-  .option("-stb, --setTransparentBackground", "Set transparent background.", false)
+  .option("-oBg, --omitBackground", "Omits background", false)
   .parse(process.argv);
 
 export default program;

@@ -56,7 +56,7 @@ program.version("1.0.0").option("-p, --path <path>", "The file path to save the 
   "-wu, --waitUntil [choice]",
   "waitUntil accepts choices load, domcontentloaded, networkidle0, networkidle2. Defaults to 'networkidle2'.",
   "networkidle2"
-).option("-stb, --setTransparentBackground", "Set transparent background.", false).parse(process.argv);
+).option("-oBg, --omitBackground", "Omits background", false).parse(process.argv);
 var cli_default = program;
 
 // src/options.js
@@ -96,7 +96,8 @@ var prepareOptions = (optionsFromCLI) => Object.keys(optionsFromCLI).reduce((acc
 (async () => {
   const cliOptions = cli_default.opts();
   const options = prepareOptions(cliOptions);
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"], executablePath });
   const page = await browser.newPage();
   const location = cli_default.args[0];
   await page.goto(isUrl(location) ? location : fileUrl(location), {
@@ -104,12 +105,6 @@ var prepareOptions = (optionsFromCLI) => Object.keys(optionsFromCLI).reduce((acc
   });
   if (options.debug) {
     console.log(options);
-  }
-  if (options.setTransparentBackground) {
-    await page._emulationManager._client.send(
-      "Emulation.setDefaultBackgroundColorOverride",
-      { color: { r: 0, g: 0, b: 0, a: 0 } }
-    );
   }
   await page.pdf(options);
   await browser.close();

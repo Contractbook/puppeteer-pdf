@@ -10,7 +10,8 @@ import { prepareOptions } from "./src/options";
   const cliOptions = cli.opts();
   const options = prepareOptions(cliOptions);
 
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"], executablePath });
   const page = await browser.newPage();
 
   // Get URL / file path from first argument
@@ -21,13 +22,6 @@ import { prepareOptions } from "./src/options";
   // Output options if in debug mode
   if (options.debug) {
     console.log(options);
-  }
-
-  if (options.setTransparentBackground) {
-    await page._emulationManager._client.send(
-      'Emulation.setDefaultBackgroundColorOverride',
-      { color: { r: 0, g: 0, b: 0, a: 0 } }
-    );
   }
 
   await page.pdf(options);
