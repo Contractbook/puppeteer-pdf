@@ -11,6 +11,8 @@ program
     1
   )
   .option("-dhf, --displayHeaderFooter", "Display header and footer.", false)
+  .option("-pCSSPage, --preferCSSPageSize", "Give any CSS @page size declared in the page priority over what is declared in the width or height or format option.", false)
+  .option("-l, --landscape", "(Optional) Whether to print in landscape orientation.", false)
   .option(
     "-ht, --headerTemplate [template]",
     "HTML template for the print header."
@@ -29,6 +31,10 @@ program
     "-f, --format [format]",
     "Paper format. If set, takes priority over width or height options. Defaults to 'Letter'.",
     "Letter"
+  )
+  .option(
+    "-dSF, --deviceScaleFactor [width]",
+    "Device scale factor"
   )
   .option(
     "-w, --width [width]",

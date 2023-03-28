@@ -14,6 +14,8 @@ import { prepareOptions } from "./src/options";
   const browser = await puppeteer.launch({ args: ["--no-sandbox"], executablePath });
   const page = await browser.newPage();
 
+  await page.setViewport({width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1});
+
   // Get URL / file path from first argument
   const location = cli.args[0];
   await page.goto(isUrl(location) ? location : fileUrl(location), {
