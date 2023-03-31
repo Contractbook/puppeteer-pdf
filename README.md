@@ -1,11 +1,6 @@
 # Puppeteer PDF CLI
 
-HTML to PDF from the command line with Puppeteer.
-
-[![GitHub stars](https://img.shields.io/github/stars/namespace-ee/puppeteer-pdf.svg?style=social&label=Stars)](https://github.com/namespace-ee/puppeteer-pdf)
-[![npm downloads](https://img.shields.io/npm/dt/puppeteer-pdf.svg)](https://npmjs.org/package/puppeteer-pdf)
-[![npm license](https://img.shields.io/npm/l/puppeteer-pdf.svg)](https://npmjs.org/package/puppeteer-pdf)
-[![npm version](https://img.shields.io/npm/v/puppeteer-pdf.svg)](https://npmjs.org/package/puppeteer-pdf)
+Updated Contractbook version of puppeteer-pdf - HTML to PDF from the command line with Puppeteer.
 
 ## Help
 ```
