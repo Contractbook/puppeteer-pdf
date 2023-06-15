@@ -91,7 +91,11 @@ var prepareOptions = (optionsFromCLI) => Object.keys(optionsFromCLI).reduce((acc
   const cliOptions = cli_default.opts();
   const options = prepareOptions(cliOptions);
   const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"], executablePath });
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox"],
+    executablePath
+  });
   const page = await browser.newPage();
   await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
   const location = cli_default.args[0];
