@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    name: semgrep
+    # Skip any PR created by dependabot to avoid permission issues:
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    container:
+      image: returntocorp/semgrep
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v3
+    - name: semgrep
+      run: semgrep scan --config auto --error
