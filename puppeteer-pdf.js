@@ -11,7 +11,7 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
 // main.js
 import fileUrl from "file-url";
 import isUrl from "is-url";
-import puppeteer from "puppeteer";
+import puppeteer2 from "puppeteer";
 
 // src/cli.js
 import { Command } from "commander";
@@ -95,46 +95,53 @@ var prepareOptions = (optionsFromCLI) => Object.keys(optionsFromCLI).reduce((acc
   };
 }, {});
 
+// src/fixBrokenPdf.js
+import puppeteer from "puppeteer";
+var fixBrokenPdf = async (options) => {
+  const executablePath = process.env.FIREFOX_BIN || "/usr/bin/firefox";
+  const browser = await puppeteer.launch({
+    headless: true,
+    product: "firefox",
+    executablePath
+  });
+  const page = await browser.newPage();
+  const html = `
+  <html>
+    <body style="margin: 0;">
+      <embed src="data:application/pdf;base64,${options.brokenPdf}" type="application/pdf" style="width: 100vw; height: 100vh;">
+    </body>
+  </html>
+  `;
+  await page.setContent(html);
+  await page.waitForSelector('embed[type="application/pdf"]');
+  await page.pdf({ path: options.fixedPdf, printBackground: true });
+  await browser.close();
+};
+var fixBrokenPdf_default = fixBrokenPdf;
+
 // main.js
 (async () => {
   const cliOptions = cli_default.opts();
   const options = prepareOptions(cliOptions);
   if (options.brokenPdf !== void 0 && options.fixedPdf !== void 0) {
-    const executablePath = process.env.FIREFOX_BIN || "/usr/bin/firefox";
-    const browser = await puppeteer.launch({
-      headless: true,
-      product: "firefox",
-      executablePath
-    });
-    const page = await browser.newPage();
-    const html = `
-    <html>
-      <body style="margin: 0;">
-        <embed src="data:application/pdf;base64,${options.brokenPdf}" type="application/pdf" style="width: 100vw; height: 100vh;">
-      </body>
-    </html>
-    `;
-    await page.setContent(html);
-    await page.waitForSelector('embed[type="application/pdf"]');
-    await page.pdf({ path: options.fixedPdf, printBackground: true });
-    await browser.close();
-  } else {
-    const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
-    const browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox"],
-      executablePath
-    });
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
-    const location = cli_default.args[0];
-    await page.goto(isUrl(location) ? location : fileUrl(location), {
-      waitUntil: options.waitUntil || "networkidle2"
-    });
-    if (options.debug) {
-      console.log(options);
-    }
-    await page.pdf(options);
-    await browser.close();
+    fixBrokenPdf_default(options);
+    return;
   }
+  const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
+  const browser = await puppeteer2.launch({
+    headless: "new",
+    args: ["--no-sandbox"],
+    executablePath
+  });
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
+  const location = cli_default.args[0];
+  await page.goto(isUrl(location) ? location : fileUrl(location), {
+    waitUntil: options.waitUntil || "networkidle2"
+  });
+  if (options.debug) {
+    console.log(options);
+  }
+  await page.pdf(options);
+  await browser.close();
 })();
