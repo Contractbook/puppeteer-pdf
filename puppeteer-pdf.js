@@ -59,7 +59,7 @@ program.version("1.0.0").option("-p, --path <path>", "The file path to save the 
   "-wu, --waitUntil [choice]",
   "waitUntil accepts choices load, domcontentloaded, networkidle0, networkidle2. Defaults to 'networkidle2'.",
   "networkidle2"
-).option("-oBg, --omitBackground", "Omits background", false).parse(process.argv);
+).option("-oBg, --omitBackground", "Omits background", false).option("-bpdf --brokenPdf [file]", "Broken PDF to fix").option("-fpdf --fixedPdf [file]", "Fixed PDF").parse(process.argv);
 var cli_default = program;
 
 // src/options.js
@@ -79,7 +79,16 @@ var prepareOptions = (optionsFromCLI) => Object.keys(optionsFromCLI).reduce((acc
       }
     };
   }
-  const optionValue = ["headerTemplate", "footerTemplate"].includes(optionKey) && value.startsWith("file://") ? fs.readFileSync(value.replace("file://", ""), "utf-8") : value;
+  let optionValue = value;
+  if (["headerTemplate", "footerTemplate"].includes(optionKey) && value.startsWith("file://")) {
+    optionValue = fs.readFileSync(value.replace("file://", ""), "utf-8");
+  }
+  if (["brokenPdf"].includes(optionKey)) {
+    optionValue = fs.readFileSync(value.replace("file://", "")).toString("base64");
+  }
+  if (["fixedPdf"].includes(optionKey)) {
+    optionValue = value.replace("file://", "");
+  }
   return {
     ...acc,
     [optionKey]: optionValue
@@ -90,21 +99,42 @@ var prepareOptions = (optionsFromCLI) => Object.keys(optionsFromCLI).reduce((acc
 (async () => {
   const cliOptions = cli_default.opts();
   const options = prepareOptions(cliOptions);
-  const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox"],
-    executablePath
-  });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
-  const location = cli_default.args[0];
-  await page.goto(isUrl(location) ? location : fileUrl(location), {
-    waitUntil: options.waitUntil || "networkidle2"
-  });
-  if (options.debug) {
-    console.log(options);
+  if (options.brokenPdf !== void 0 && options.fixedPdf !== void 0) {
+    const executablePath = process.env.FIREFOX_BIN || "/usr/bin/firefox";
+    const browser = await puppeteer.launch({
+      headless: true,
+      product: "firefox",
+      executablePath
+    });
+    const page = await browser.newPage();
+    const html = `
+    <html>
+      <body style="margin: 0;">
+        <embed src="data:application/pdf;base64,${options.brokenPdf}" type="application/pdf" style="width: 100vw; height: 100vh;">
+      </body>
+    </html>
+    `;
+    await page.setContent(html);
+    await page.waitForSelector('embed[type="application/pdf"]');
+    await page.pdf({ path: options.fixedPdf, printBackground: true });
+    await browser.close();
+  } else {
+    const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
+    const browser = await puppeteer.launch({
+      headless: "new",
+      args: ["--no-sandbox"],
+      executablePath
+    });
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
+    const location = cli_default.args[0];
+    await page.goto(isUrl(location) ? location : fileUrl(location), {
+      waitUntil: options.waitUntil || "networkidle2"
+    });
+    if (options.debug) {
+      console.log(options);
+    }
+    await page.pdf(options);
+    await browser.close();
   }
-  await page.pdf(options);
-  await browser.close();
 })();
