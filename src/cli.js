@@ -67,6 +67,8 @@ program
     "networkidle2"
   )
   .option("-oBg, --omitBackground", "Omits background", false)
+  .option("-bpdf --brokenPdf [file]", "Broken PDF to fix")
+  .option("-fpdf --fixedPdf [file]", "Fixed PDF")
   .parse(process.argv);
 
 export default program;
