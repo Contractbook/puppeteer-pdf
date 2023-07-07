@@ -29,6 +29,8 @@ puppeteer-pdf --help
     -stb, --setTransparentBackground  Sets transparent background in resulting PDF. Uses the workaround described here: https://github.com/GoogleChrome/puppeteer/issues/2545#issuecomment-397590569
     -d, --debug                       Output Puppeteer PDF options
     -wu, --waitUntil [choice]         waitUntil accepts choices load, domcontentloaded, networkidle0, networkidle2. Defaults to 'networkidle2'. (default: networkidle2)
+    -bpdf --brokenPdf [file]          Broken PDF to fix
+    -fpdf --fixedPdf [file]           Fixed PDF
     -h, --help                        output usage information
 ```
 
