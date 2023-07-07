@@ -19,10 +19,19 @@ export const prepareOptions = (optionsFromCLI) =>
       }
     }
 
-    const optionValue = ["headerTemplate", "footerTemplate"].includes(optionKey) &&
-      value.startsWith("file://")
-        ? fs.readFileSync(value.replace("file://", ""), "utf-8")
-        : value;
+    let optionValue = value;
+
+    if (['headerTemplate', 'footerTemplate'].includes(optionKey) && value.startsWith('file://')) {
+      optionValue = fs.readFileSync(value.replace('file://', ''), 'utf-8');
+    }
+
+    if (['brokenPdf'].includes(optionKey)) {
+      optionValue = fs.readFileSync(value.replace('file://', '')).toString('base64');
+    }
+
+    if (['fixedPdf'].includes(optionKey)) {
+      optionValue = value.replace('file://', '');
+    }
 
     return {
       ...acc,
