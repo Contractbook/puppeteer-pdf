@@ -29,19 +29,29 @@ import fixBrokenPdf from "./src/fixBrokenPdf";
   });
   const page = await browser.newPage();
 
-  await page.setViewport({width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1});
+  try {
+    await page.setViewport({width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1});
 
-  // Get URL / file path from first argument
-  const location = cli.args[0];
-  await page.goto(isUrl(location) ? location : fileUrl(location), {
-    waitUntil: options.waitUntil || "networkidle2"
-  });
-  // Output options if in debug mode
-  if (options.debug) {
-    console.log(options);
+    // Get URL / file path from first argument
+    const location = cli.args[0];
+    await page.goto(isUrl(location) ? location : fileUrl(location), {
+      waitUntil: options.waitUntil || "networkidle2"
+    });
+    // Output options if in debug mode
+    if (options.debug) {
+      console.log(options);
+    }
+
+    await page.pdf(options);
+
+    await browser.close();
+  } catch(e) {
+    console.error(e);
+  } finally {
+    // Kill group on error.
+    const pid = -browser.process().pid;
+    try {
+      process.kill(pid, 'SIGKILL');
+    } catch (e) {}
   }
-
-  await page.pdf(options);
-
-  await browser.close();
 })();
