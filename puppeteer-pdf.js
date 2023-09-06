@@ -130,7 +130,12 @@ var fixBrokenPdf_default = fixBrokenPdf;
   const executablePath = process.env.CHROME_BIN || "/usr/bin/google-chrome-stable";
   const browser = await puppeteer2.launch({
     headless: "new",
-    args: ["--no-sandbox"],
+    args: [
+      "--no-sandbox",
+      "--single-process",
+      "--no-zygote",
+      "--disable-gpu"
+    ],
     executablePath
   });
   const page = await browser.newPage();
