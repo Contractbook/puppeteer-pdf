@@ -139,14 +139,24 @@ var fixBrokenPdf_default = fixBrokenPdf;
     executablePath
   });
   const page = await browser.newPage();
-  await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
-  const location = cli_default.args[0];
-  await page.goto(isUrl(location) ? location : fileUrl(location), {
-    waitUntil: options.waitUntil || "networkidle2"
-  });
-  if (options.debug) {
-    console.log(options);
+  try {
+    await page.setViewport({ width: 1240, height: 1448, deviceScaleFactor: options.deviceScaleFactor || 1 });
+    const location = cli_default.args[0];
+    await page.goto(isUrl(location) ? location : fileUrl(location), {
+      waitUntil: options.waitUntil || "networkidle2"
+    });
+    if (options.debug) {
+      console.log(options);
+    }
+    await page.pdf(options);
+    await browser.close();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    const pid = -browser.process().pid;
+    try {
+      process.kill(pid, "SIGKILL");
+    } catch (e) {
+    }
   }
-  await page.pdf(options);
-  await browser.close();
 })();
