@@ -21,7 +21,6 @@ import fixBrokenPdf from "./src/fixBrokenPdf";
     headless: 'new',
     args: [
       "--no-sandbox",
-      "--single-process",
       "--no-zygote",
       "--disable-gpu"
     ],
