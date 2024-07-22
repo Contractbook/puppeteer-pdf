@@ -132,7 +132,6 @@ var fixBrokenPdf_default = fixBrokenPdf;
     headless: "new",
     args: [
       "--no-sandbox",
-      "--single-process",
       "--no-zygote",
       "--disable-gpu"
     ],
