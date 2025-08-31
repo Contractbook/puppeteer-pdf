@@ -69,6 +69,7 @@ program
   .option("-oBg, --omitBackground", "Omits background", false)
   .option("-bpdf --brokenPdf [file]", "Broken PDF to fix")
   .option("-fpdf --fixedPdf [file]", "Fixed PDF")
+  .option("--png", "Output image file rather than PDF", false)
   .parse(process.argv);
 
 export default program;
