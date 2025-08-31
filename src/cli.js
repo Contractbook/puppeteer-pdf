@@ -41,7 +41,7 @@ program
     "Paper width, accepts values labeled with units."
   )
   .option(
-    "-h, --heigh [height]",
+    "-h, --height [height]",
     "Paper height, accepts values labeled with units."
   )
   .option(
