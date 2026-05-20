@@ -7,6 +7,10 @@
   "bin": "./puppeteer-pdf.js",
   "main": "puppeteer-pdf.js",
   "type": "module",
+  "packageManager": "yarn@4.13.0",
+  "engines": {
+    "node": ">=18.12.1"
+  },
   "scripts": {
     "build": "esbuild main.js --bundle --format=esm --packages=external --platform=node --target=node18.12.1 --banner:js=\"import {createRequire} from 'module';const require=createRequire(import.meta.url);\" --outfile=puppeteer-pdf.js"
   },

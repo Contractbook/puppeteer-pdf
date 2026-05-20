@@ -64,3 +64,5 @@ demo.pdf
 demo-file-header.pdf
 
 .DS_*
+
+.yarn
