@@ -1,7 +1,7 @@
 {
   "name": "@contractbook/puppeteer-pdf",
   "author": "Patryk Domałeczny <patryk.domaleczny@gmail.com>",
-  "version": "1.6.4",
+  "version": "1.6.8",
   "description": "A command line tool to generate PDF from URLs with electron.",
   "preferGlobal": true,
   "bin": "./puppeteer-pdf.js",
@@ -15,7 +15,7 @@
     "build": "esbuild main.js --bundle --format=esm --packages=external --platform=node --target=node18.12.1 --banner:js=\"import {createRequire} from 'module';const require=createRequire(import.meta.url);\" --outfile=puppeteer-pdf.js"
   },
   "devDependencies": {
-    "esbuild": "0.17.x"
+    "esbuild": "0.28.x"
   },
   "dependencies": {
     "commander": "10.0.x",
