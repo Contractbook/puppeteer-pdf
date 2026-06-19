@@ -15,7 +15,7 @@
     "build": "esbuild main.js --bundle --format=esm --packages=external --platform=node --target=node18.12.1 --banner:js=\"import {createRequire} from 'module';const require=createRequire(import.meta.url);\" --outfile=puppeteer-pdf.js"
   },
   "devDependencies": {
-    "esbuild": "0.28.x"
+    "esbuild": "^0.28.1"
   },
   "dependencies": {
     "commander": "10.0.x",
