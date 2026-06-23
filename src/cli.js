@@ -41,7 +41,7 @@ program
     "Paper width, accepts values labeled with units."
   )
   .option(
-    "-h, --heigh [height]",
+    "-h, --height [height]",
     "Paper height, accepts values labeled with units."
   )
   .option(
@@ -69,6 +69,7 @@ program
   .option("-oBg, --omitBackground", "Omits background", false)
   .option("-bpdf --brokenPdf [file]", "Broken PDF to fix")
   .option("-fpdf --fixedPdf [file]", "Fixed PDF")
+  .option("--png", "Output image file rather than PDF", false)
   .parse(process.argv);
 
 export default program;
